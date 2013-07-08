@@ -1,0 +1,14 @@
+default: &defaults
+  sessions:
+    default:
+      uri: <%= ENV['MONGO_URL'] %>
+      options:
+        skip_version_check: true
+        safe: true
+
+development:
+  <<: *defaults
+test:
+  <<: *defaults
+production:
+  <<: *defaults

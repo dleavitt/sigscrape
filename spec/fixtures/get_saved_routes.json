@@ -1,0 +1,62 @@
+[
+  {
+    "id": 807909,
+    "siblingId": 807908,
+    "region": "SoCal",
+    "routes": [
+      {
+        "id": 807909,
+        "siblingId": 807908,
+        "region": "SoCal",
+        "startName": "DTLA",
+        "endName": "Work",
+        "description": "",
+        "start": {},
+        "end": {},
+        "paths": [
+          {
+            "name": "DTLA to Work",
+            "miles": 20.37056673752581,
+            "minutes": 23.168793337336165,
+            "speedLimitMinutes": 21.64609837942807,
+            "segments": [],
+            "start": {},
+            "end": {},
+            "description": "110 South and 105 West"
+          }
+        ]
+      }
+    ],
+    "active": false
+  },
+  {
+    "id": 807908,
+    "siblingId": 807909,
+    "region": "SoCal",
+    "routes": [
+      {
+        "id": 807908,
+        "siblingId": 807909,
+        "region": "SoCal",
+        "startName": "Work",
+        "endName": "DTLA",
+        "description": "",
+        "start": {},
+        "end": {},
+        "paths": [
+          {
+            "name": "Work to DTLA",
+            "miles": 20.37056673752581,
+            "minutes": 25.677412119872656,
+            "speedLimitMinutes": 21.646098379428075,
+            "segments": [],
+            "start": {},
+            "end": {},
+            "description": "1 North and 105 East"
+          }
+        ]
+      }
+    ],
+    "active": false
+  }
+]
