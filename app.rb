@@ -1,9 +1,9 @@
-ENVIRONMENT = ENV['RACK_ENV'] || :development
+RACK_ENV = ENV['RACK_ENV'] || :development
 
 require "rubygems"
 require "bundler"
 ENV['RACK_ENV'] ||= "development"
-Bundler.require :default, ENV['RACK_ENV']
+Bundler.require :default, RACK_ENV
 require "sinatra/reloader"
 
 Dotenv.load ".env.#{ENV['RACK_ENV']}", ".env" if defined? Dotenv
@@ -16,6 +16,7 @@ include Sigscrape
 class Sigscrape::App < Sinatra::Base
 
   register Sinatra::AssetPipeline
+
   use Rack::Session::Cookie, secret: ENV['SESSION_SECRET']
   use Rack::Csrf, raise: true
   set :haml, escape_html: true
@@ -28,7 +29,31 @@ class Sigscrape::App < Sinatra::Base
     BetterErrors.application_root = File.expand_path('..', __FILE__)
   end
 
+  helpers do
+    def current_user
+      if session[:user_id]
+        @current_user ||= Models::User.find(session[:user_id])
+      else
+        nil
+      end
+    end
+  end
+
   get "/" do
-    haml :login
+    haml current_user ? :index : :login
+  end
+
+  post "/login" do
+    if user = Commands.log_in_to_site(params[:name], params[:password])
+      session[:user_id] = user.id
+    else
+    end
+
+    redirect to("/")
+  end
+
+  post "/logout" do
+    session[:user_id] = nil
+    redirect to("/")
   end
 end

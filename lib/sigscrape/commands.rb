@@ -11,6 +11,17 @@ module Sigscrape
       (service || Services::Sigalert.new).login(u.name, u.password)
     end
 
+    def self.log_in_to_site(name, password, service = nil)
+      user = Models::User.find_or_initialize_by(name: name, password: password)
+      begin
+        log_in_user(user, service)
+        user.save!
+        user
+      rescue Services::Sigalert::InvalidCredentials => ex
+        nil
+      end
+    end
+
     def self.update_user_journeys(user, service = nil)
       service = log_in_user(user, service)
 

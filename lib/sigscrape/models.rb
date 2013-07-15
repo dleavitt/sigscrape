@@ -12,7 +12,6 @@ module Sigscrape
       embeds_many :routes
 
       index({name: 1}, unique: true)
-      index({"routes.journeys.id" => 1}, unique: true)
       index({"routes.journeys.id" => 1, "journeys.retrieved_at" => 1})
     end
 

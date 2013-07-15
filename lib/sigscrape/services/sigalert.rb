@@ -3,6 +3,8 @@ require 'typhoeus/adapters/faraday'
 module Sigscrape
   module Services
     class Sigalert
+      class InvalidCredentials < StandardError; end
+
       BASE_URI        = "http://www.sigalert.com"
       AUTH_ENDPOINT   = "/Ajax/Login.asp"
       ROUTES_ENDPOINT = "/Ajax/GetSavedRoutes.asp"
@@ -23,7 +25,11 @@ module Sigscrape
       end
 
       def login(name, password)
-        @conn.post AUTH_ENDPOINT, { name: name, password: password }
+        begin
+          @conn.post AUTH_ENDPOINT, { name: name, password: password }
+        rescue Faraday::Error::ParsingError => ex
+          raise InvalidCredentials
+        end
         self
       end
 
