@@ -1,0 +1,10 @@
+!!!
+%head
+  %meta(charset="utf-8")
+  %title Sigscrape
+  %meta(name="viewport" content="width=device-width, initial-scale=1.0")
+  != stylesheet_tag "app"
+  != Rack::Csrf.metatag(env)
+%body
+  != yield
+  != javascript_tag "app.js", expand: settings.development?

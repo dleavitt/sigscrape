@@ -5,9 +5,10 @@ begin
   task :default => :spec
 rescue LoadError => ex
 end
-
+  
 task :env do
   require "./app"
+  include Sigscrape
 end
 
 task :environment => :env
@@ -20,22 +21,20 @@ end
 
 desc "Create a new user or update an existing one"
 task :create_user, [:name, :password] => [:env] do |t,args|
-  user = Sigscrape::Commands.create_or_update_user(args[:name], args[:password])
+  user = Commands.create_or_update_user(args[:name], args[:password])
   puts "Created user '#{user.name}' with password '#{user.password}'"
 end
 
 desc "Update journey times for all users"
 task :update_journeys => :env do
-  Sigscrape::Models::User.all.each do |user|
-    # TODO: why does this take a name?
-    Sigscrape::Commands.update_user_journeys(user)
+  Models::User.all.each do |user|
+    Commands.update_user_journeys(user)
   end
 end
 
 namespace :mongoid do
   def mongoid_models
-    ns = Sigscrape::Models
-    ns.constants.map(&ns.method(:const_get))
+    Models.constants.map(&Models.method(:const_get))
       .select { |c| c.ancestors.include?(Mongoid::Document) && ! c.embedded? }
   end
 

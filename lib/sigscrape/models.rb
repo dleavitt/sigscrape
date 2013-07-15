@@ -39,6 +39,10 @@ module Sigscrape
       field :minutes, type: Float
 
       embedded_in :route
+
+      def local_time
+        created_at.in_time_zone("Pacific Time (US & Canada)")
+      end
     end
   end
 end

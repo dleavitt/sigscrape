@@ -32,7 +32,7 @@ Add your Sigalert account
 
     rake create_user[your_username,your_password]
 
-Get current travel times for all users' routes (add this to cron)
+Get current travel times for all users' routes
 
     rake update_journeys
 
