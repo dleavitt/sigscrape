@@ -1,5 +1,7 @@
 require "spec_helper"
 
+include Sigscrape
+
 describe Sigscrape::Services::Sigalert do
   describe "#login" do
     it "doesn't explode" do
@@ -31,7 +33,30 @@ describe Sigscrape::Services::Sigalert do
 end
 
 describe Sigscrape::Commands do
-  describe ".store_user_routes" do
+  describe '.log_in_to_site' do
+    context "valid credentials" do
+      context "user exists" do
+        before do
+          @user = Models::User.create(name: "asd", password: "123")
+          @user.save!
+        end
+
+        it "returns the existing user" do
+          Commands.log_in_to_site("asd", "123", client).id.should eq @user.id
+        end
+      end
+
+      context "user does not exist" do
+        it "creates a new user" do
+          expect {
+            Commands.log_in_to_site("asd", "123", client)
+          }.to change{user.reload.routes.count}.by(2)
+        end
+      end
+    end
+  end
+
+  describe ".update_user_journeys" do
     let! :user do
       Sigscrape::Models::User.create(name: "asd", password: "123")
     end
@@ -78,5 +103,48 @@ describe Sigscrape::Commands do
     end
 
     it "fails for a nonexistent user"
+  end
+end
+
+describe Sigscrape::App do
+  include Rack::Test::Methods
+
+  def app
+    Sigscrape::App.new
+  end
+
+  describe "GET /" do
+    before do
+      get '/'
+    end
+
+    it "returns successfully" do
+      last_response.status.should be 200
+    end
+
+    it "renders the 'login' template" do
+      last_response.body.should match "find the best commute time"
+    end
+
+    it "does not show an error message" do
+      last_response.body.should_not match "alert-error"
+    end
+  end
+
+  describe "POST /login" do
+    context "with empty params" do
+      before do
+        env "rack.session", { 'csrf.token' => 'token' }
+        post "/login", { name: "nope", password: "nopass", _csrf: 'token' }
+      end
+
+      it "re-renders the login page" do
+        last_response.body.should match "find the best commute time"
+      end
+
+      it "shows an error" do
+        last_response.body.should match "alert-error"
+      end
+    end
   end
 end

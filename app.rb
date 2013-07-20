@@ -11,8 +11,6 @@ Mongoid.load!("config/mongoid.yml", ENV['RACK_ENV'])
 LIB_PATH = File.join(File.dirname(__FILE__), "lib", "**", "*.rb")
 Dir[LIB_PATH].each(&method(:require))
 
-include Sigscrape
-
 class Sigscrape::App < Sinatra::Base
 
   register Sinatra::AssetPipeline
@@ -32,7 +30,7 @@ class Sigscrape::App < Sinatra::Base
   helpers do
     def current_user
       if session[:user_id]
-        @current_user ||= Models::User.find(session[:user_id])
+        @current_user ||= Sigscrape::Models::User.find(session[:user_id])
       else
         nil
       end
@@ -46,10 +44,10 @@ class Sigscrape::App < Sinatra::Base
   post "/login" do
     if user = Commands.log_in_to_site(params[:name], params[:password])
       session[:user_id] = user.id
+      redirect to("/")
     else
+      haml :login, login_error: true
     end
-
-    redirect to("/")
   end
 
   post "/logout" do

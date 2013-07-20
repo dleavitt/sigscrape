@@ -12,6 +12,10 @@
 
   .row-fluid
     .span12
+      - if defined? login_error
+        .alert.alert-error
+          %strong Error!
+          Your credentials didn't seem to work. Check them?
       %form#login-form(action="/login" method="post")
         != Rack::Csrf.tag(env)
 
