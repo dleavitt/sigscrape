@@ -104,6 +104,10 @@ describe Sigscrape::Commands do
 
     it "fails for a nonexistent user"
   end
+
+  describe ".group_journeys_by_time" do
+    
+  end
 end
 
 describe Sigscrape::App do
