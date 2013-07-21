@@ -31,7 +31,7 @@ module Sigscrape
         route.save!
 
         journey = route.journeys.create({
-          retrived_at: Time.now,
+          retrieved_at: Time.now,
           minutes: route_data[:minutes],
         })
       end

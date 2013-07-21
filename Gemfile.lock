@@ -8,7 +8,7 @@ GIT
 PATH
   remote: ../sinatra-asset_pipeline
   specs:
-    sinatra-asset_pipeline (0.0.1)
+    sinatra-asset_pipeline (0.0.2)
       sinatra
       sprockets
       sprockets-helpers

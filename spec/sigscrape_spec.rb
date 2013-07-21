@@ -34,8 +34,8 @@ end
 
 describe Sigscrape::Commands do
   describe '.log_in_to_site' do
-    context "valid credentials" do
-      context "user exists" do
+    context "with valid credentials" do
+      context "where user exists" do
         before do
           @user = Models::User.create(name: "asd", password: "123")
           @user.save!
@@ -46,11 +46,11 @@ describe Sigscrape::Commands do
         end
       end
 
-      context "user does not exist" do
+      context "where user does not exist" do
         it "creates a new user" do
           expect {
             Commands.log_in_to_site("asd", "123", client)
-          }.to change{user.reload.routes.count}.by(2)
+          }.to change{Models::User.count}.by(1)
         end
       end
     end
@@ -97,20 +97,48 @@ describe Sigscrape::Commands do
       }.to change{user.reload.routes[0].journeys.count}.by(2)
     end
 
-    it "sets the right value for journeys" do
+    it "sets the minutes for journeys" do
       Sigscrape::Commands.update_user_journeys(user, client)
       user.reload.routes[0].journeys[0].minutes.should == 23.168793337336165
+    end
+
+    it "sets the retrieved at for journeys" do
+      Sigscrape::Commands.update_user_journeys(user, client)
+      retrieved_at = user.reload.routes[0].journeys[0].retrieved_at.to_i
+      retrieved_at.should be_within(10).of(Time.now.to_i)
+    end
+
+    it "sets the retrieved at for journeys on creation" do
+      Sigscrape::Commands.update_user_journeys(user, client)
+      sleep(2)
+      retrieved_at = user.reload.routes[0].journeys[0].retrieved_at.to_i
+      retrieved_at.should_not be_within(1).of(Time.now.to_i)
     end
 
     it "fails for a nonexistent user"
   end
 
   describe ".group_journeys_by_time" do
-    
+    before do
+      @users = Models::User.create([
+        { name: "asd", password: "123", routes: [
+          { name: "test1", journeys: [
+            {  }
+          ] }
+        ]}, {
+
+        }
+      ])
+    end
+
+    it "works" do
+      @users.should be_a Array
+    end
   end
 end
 
 describe Sigscrape::App do
+  # TODO: mock call
   include Rack::Test::Methods
 
   def app
@@ -137,17 +165,30 @@ describe Sigscrape::App do
 
   describe "POST /login" do
     context "with empty params" do
+      # TODO: sigalert response is stubbed with ANY credentials, so can't
+      # test failure right now
       before do
         env "rack.session", { 'csrf.token' => 'token' }
         post "/login", { name: "nope", password: "nopass", _csrf: 'token' }
       end
 
-      it "re-renders the login page" do
+      pending "re-renders the login page" do
         last_response.body.should match "find the best commute time"
       end
 
-      it "shows an error" do
+      pending "shows an error" do
         last_response.body.should match "alert-error"
+      end
+    end
+
+    context "with valid params" do
+      before do
+        env "rack.session", { 'csrf.token' => 'token' }
+        post "/login", { name: "asd", password: "123", _csrf: 'token' }
+      end
+
+      it "redirects to the logged in page" do
+        last_response.status.should eq 302
       end
     end
   end
