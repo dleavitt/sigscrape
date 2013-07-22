@@ -108,13 +108,6 @@ describe Sigscrape::Commands do
       retrieved_at.should be_within(10).of(Time.now.to_i)
     end
 
-    it "sets the retrieved at for journeys on creation" do
-      Sigscrape::Commands.update_user_journeys(user, client)
-      sleep(2)
-      retrieved_at = user.reload.routes[0].journeys[0].retrieved_at.to_i
-      retrieved_at.should_not be_within(1).of(Time.now.to_i)
-    end
-
     it "fails for a nonexistent user"
   end
 
