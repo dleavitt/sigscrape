@@ -1,0 +1,38 @@
+- name: user1
+  password: "123"
+  routes:
+    - name: test1
+      journeys:
+        - retrieved_at: 2001-12-14 21:59:43.10 -05:00
+          minutes: 20
+          label: yep
+        - retrieved_at: 2001-12-14 21:55:43.10 -05:00
+          minutes: 22
+          label: yep
+        - retrieved_at: 2001-12-21 21:59:43.10 -05:00
+          minutes: 19
+          label: yep
+        - retrieved_at: 2001-12-14 20:54:43.10 -05:00
+          minutes: 19
+          label: wrong_time
+        - retrieved_at: 2001-12-13 21:59:43.10 -05:00
+          minutes: 20
+          label: wrongday
+    - name: test2
+      journeys:
+        - retrieved_at: 2001-12-14 21:59:43.10 -05:00
+          minutes: 20
+          label: route2
+- name: user2
+  password: "123"
+  routes:
+    - name: test1
+      journeys:
+        - retrieved_at: 2001-12-14 21:59:43.10 -05:00
+          minutes: 20
+          label: user2
+    - name: test2
+      journeys:
+        - retrieved_at: 2001-12-14 21:59:43.10 -05:00
+          minutes: 20
+          label: user2

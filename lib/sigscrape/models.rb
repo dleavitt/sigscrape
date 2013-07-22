@@ -26,6 +26,10 @@ module Sigscrape
 
       embedded_in :user
       embeds_many :journeys
+
+      def journey_by_day_and_time
+
+      end
     end
 
     class Journey
@@ -36,7 +40,8 @@ module Sigscrape
 
       field :retrieved_at, type: DateTime
       field :minutes, type: Float
-
+      field :label, type: String  # optional
+      
       embedded_in :route
 
       def local_time

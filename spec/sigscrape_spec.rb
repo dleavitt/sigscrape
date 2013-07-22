@@ -120,19 +120,13 @@ describe Sigscrape::Commands do
 
   describe ".group_journeys_by_time" do
     before do
-      @users = Models::User.create([
-        { name: "asd", password: "123", routes: [
-          { name: "test1", journeys: [
-            {  }
-          ] }
-        ]}, {
-
-        }
-      ])
+      Models::User.create(yaml_fixture('users_with_journeys'))
+      @route = Models::User.find_by(name: 'user1').routes.first
     end
 
-    it "works" do
-      @users.should be_a Array
+    it "includes only the correct journeys" do
+      groups = Commands.group_journeys_by_time(@route)
+      groups[[[19, 0], 5]].map(&:label).uniq.should eq ["yep"]
     end
   end
 end

@@ -39,8 +39,8 @@ module Sigscrape
 
     def self.group_journeys_by_time(route, interval=10.minutes)
       route.journeys.group_by do |journey|
-        time_of_day = journey.created_at.round_off(interval)
-        [ [ time_of_day.hour, time_of_day.min ], journey.created_at.wday ]
+        time_of_day = journey.retrieved_at.round_off(interval)
+        [ [ time_of_day.hour, time_of_day.min ], journey.retrieved_at.wday ]
       end
     end
   end

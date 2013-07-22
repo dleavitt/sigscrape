@@ -1,9 +1,14 @@
 ENV['RACK_ENV'] = 'test'
 
 require "./app"
+require 'yaml'
 
 def fixture(name)
   File.read(File.join(File.dirname(__FILE__), 'fixtures', name))
+end
+
+def yaml_fixture(name)
+  YAML.load_file(File.join(File.dirname(__FILE__), 'fixtures', name + '.yml'))
 end
 
 def client
