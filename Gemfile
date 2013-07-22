@@ -15,7 +15,7 @@ gem 'typhoeus'
 # Web
 gem 'sinatra', require: 'sinatra/base'
 gem 'sinatra-contrib'
-gem 'sinatra-asset_pipeline'
+gem 'sinatra-asset_pipeline', github: 'dleavitt/sinatra-asset_pipeline'
 gem "rack_csrf", require: "rack/csrf"
 gem "rack-protection"
 gem 'puma'
