@@ -38,14 +38,16 @@ module Sigscrape
 
       store_in collection: "journeys"
 
-      field :retrieved_at, type: DateTime
+      field :retrieved_at, type: Time
       field :minutes, type: Float
       field :label, type: String  # optional
-      
+
       embedded_in :route
 
       def local_time
-        created_at.in_time_zone("Pacific Time (US & Canada)")
+        Time.use_zone "Pacific Time (US & Canada)" do
+          retrieved_at.localtime
+        end
       end
     end
   end

@@ -6,6 +6,10 @@ module RoundTime
   def floor(seconds = 60)
     Time.at((self.to_f / seconds).floor * seconds)
   end
+
+  def week_day?
+    ! self.sunday? && ! self.saturday?
+  end
 end
 
 Time.send(:include, RoundTime)

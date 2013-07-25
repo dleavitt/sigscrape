@@ -22,6 +22,8 @@ module Sigscrape
       end
     end
 
+    # pulls user journeys from sigalert and saves into db
+    #
     def self.update_user_journeys(user, service = nil)
       service = log_in_user(user, service)
 
@@ -37,10 +39,30 @@ module Sigscrape
       end
     end
 
-    def self.group_journeys_by_time(route, interval=10.minutes)
+    # groups a route's journeys by the day and time of day
+    #
+    # returns:
+    #   { [[19,   0     ],  5         ] => [<journey1>, <journey2>], ... }
+    #   { [[hour, minute], day_of_week] => [ ... ], ... }
+    #
+    def self.group_journeys_by_day_and_time(route, interval=10.minutes)
       route.journeys.group_by do |journey|
-        time_of_day = journey.retrieved_at.round_off(interval)
-        [ [ time_of_day.hour, time_of_day.min ], journey.retrieved_at.wday ]
+        time_of_day = journey.local_time.round_off(interval)
+        [ [ time_of_day.hour, time_of_day.min ], journey.local_time.wday ]
+      end
+    end
+
+    # groups a route's journeys by time of day
+    # returns only week day journeys
+    #
+    # returns:
+    #   { [hour, minute] => [<journey1>, <journey2>], ... }
+    #
+    def self.group_journeys_by_time(route, interval=10.minutes)
+      journeys = route.journeys.select { |j| j.local_time.week_day? }
+      journeys.group_by do |journey|
+        time_of_day = journey.local_time.round_off(interval)
+        [ time_of_day.hour, time_of_day.min ]
       end
     end
   end

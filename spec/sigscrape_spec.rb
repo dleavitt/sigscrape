@@ -111,6 +111,18 @@ describe Sigscrape::Commands do
     it "fails for a nonexistent user"
   end
 
+  describe ".group_journeys_by_day_and_time" do
+    before do
+      Models::User.create(yaml_fixture('users_with_journeys'))
+      @route = Models::User.find_by(name: 'user1').routes.first
+    end
+
+    it "includes only the correct journeys" do
+      groups = Commands.group_journeys_by_day_and_time(@route)
+      groups[[[22, 0], 3]].map(&:label).uniq.should eq ["yep"]
+    end
+  end
+
   describe ".group_journeys_by_time" do
     before do
       Models::User.create(yaml_fixture('users_with_journeys'))
@@ -119,7 +131,7 @@ describe Sigscrape::Commands do
 
     it "includes only the correct journeys" do
       groups = Commands.group_journeys_by_time(@route)
-      groups[[[19, 0], 5]].map(&:label).uniq.should eq ["yep"]
+      groups[[22, 0]].map(&:label).uniq.should eq ["yep", "wrong_day"]
     end
   end
 end
